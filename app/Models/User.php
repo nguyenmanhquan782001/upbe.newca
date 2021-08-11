@@ -70,4 +70,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne('App\Models\Affiliate', 'user_id', 'id');
     }
+
+
+
 }

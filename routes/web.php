@@ -15,6 +15,7 @@ use App\Http\Controllers\ProviderAuthController;
 */
 
 Route::get('/', function () {
+
     return view('welcome');
 });
 Auth::routes();
@@ -31,3 +32,4 @@ Route::get('/callback', [ProviderAuthController::class, 'callbackFunction']);
 Route::get('/kc-logout', [ProviderAuthController::class, 'providerLogout'])->name('kc-logout');
 //Go to product via affiliate link
 Route::get('/affiliate/{link?}', [AffiliateController::class, 'gotoProductLink'])->name('goto-product-link');
+

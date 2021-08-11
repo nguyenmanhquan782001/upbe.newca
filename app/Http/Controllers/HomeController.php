@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //return view('home');
+         
         $orders =  array();
         return view('home',compact('orders'));
     }

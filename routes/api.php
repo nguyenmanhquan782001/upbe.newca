@@ -3,6 +3,7 @@
 use App\Http\Controllers\AffiliateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PointController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +29,14 @@ Route::get('/listToken', [AffiliateController::class, 'listToken']);
 Route::get('/socialLogin', [AffiliateController::class, 'socialLogin']);
 Route::get('/loginToken', [AffiliateController::class, 'loginToken']);
 Route::get('/addTicket', [AffiliateController::class, 'addTicket']);
-Route::get('/paymentWithVNPay', [AffiliateController::class, 'paymentWithVNPay']);
+Route::get('/paymentWithVNPay', [AffiliateController::class, 'paymentWithVNPay']); 
+
+
+// point
+Route::get("/point/getData" , [PointController::class , 'index']);
+Route::post("/point/store", [PointController::class , 'store']);
+Route::get("/point/show/{id}" , [PointController::class , 'show']);
+Route::post("/point/update" , [PointController::class , 'update']);
+Route::get("/point/delete" , [PointController::class , 'destroy']);
+// end point
+
