@@ -21,7 +21,7 @@ class Cart extends Model
             'cart_id',
             'product_id');
     }
-    public function  cartI(){
+    public function  getCartItem(){
         return $this->hasMany(CartItem::class , 'cart_id');
     }
 

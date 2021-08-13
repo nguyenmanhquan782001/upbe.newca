@@ -84,9 +84,27 @@ class CartController extends Controller
         }
     }
 
-
     public function showCart(Request $request)
     {
-
+        if ($request->get("email")) {
+            $email = $request->email;
+            $infoUser = User::where("email", $email)->first();
+            if ($infoUser) {
+                $user_id = $infoUser->id;
+                $getCart = Cart::where("user_id", $user_id)->get();
+                foreach ($getCart as  $cart){
+                     $data = $cart->getCartItem;
+                     $data->load("infoProduct");
+//                     echo $data ; 
+                     return  response()->json($data) ;
+                }
+            } else {
+                return response()->json([
+                    'message' => "Không tìm thấy email"
+                ], 404);
+            }
+        } else {
+            return response()->json(['message' => "Không thể lấy thông tin giỏ hàng , chưa get email"], 404);
+        }
     }
 }
