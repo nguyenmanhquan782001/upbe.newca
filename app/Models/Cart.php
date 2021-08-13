@@ -12,6 +12,7 @@ class Cart extends Model
     protected $table = "cart";
     protected $primaryKey = "id";
     public $timestamps = false;
+    protected $guarded = [];
 
     public function cartItem()
     {

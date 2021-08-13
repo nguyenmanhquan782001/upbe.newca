@@ -6,39 +6,70 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+
     public function store(Request $request)
     {
-
-        if ($request->get("email")) {
-
-            $email = $request->get("email");
-            $info = User::where("email", $email)->first();
-            $user_id = $info->id;
-            $product_id = $request->input("product_id");
-            $product_quantity = $request->input("quantity");
-            $check = Cart::where("user_id", $user_id)->first();
+        if ($request->get('email')) {
+            $email = $request->email;
+            $infoUser = User::where("email", $email)->first();
+            $product_id = $request->product_id;
+            $userId = $infoUser->id;
+            $checkInput = Cart::where("user_id", $userId)->first();
+            $cartStatus = Cart::where('user_id', $userId)->where('status', 0)->first();
+            if ($cartStatus) {
+                $count = $cartStatus->count();
+            }
             $checkProduct = DB::table("cart_item")
                 ->where("product_id", '=', $product_id)
-                ->where("cart_id", '=', $check->id)->first();
-
-            if ($check && $checkProduct) {
-                $check_Id = $check->id;
-                $data = [];
-                $data['product_id'] = $request->product_id;
-                $data['quantity'] = $request->quantity;
-                DB::table("cart_item")->where("cart_id", $check_Id)->update($data);
+                ->where("cart_id", '=', @$checkInput->id)->first();
+            if (!$checkInput) {
+                $cart = new Cart();
+                $cart->user_id = $userId;
+                $cart->status = 0;
+                $cart->save();
+                $cartId = $cart->id;
+                $cart->cartItem()->attach($cartId, [
+                    'product_id' => $request->product_id,
+                    'quantity' => $request->quantity
+                ]);
                 return response()->json([
-                    'success' => " cập nhật Số lượng thành công",
-                    'data' => $data
+                    "message" => "Thêm sản phẩm vào giỏ hàng thành công",
+                    "data" => $cart
                 ], 200);
             }
-            if ($check) {
-                $cart = Cart::find($check->id);
+            if (@$count == 0 && $request->input("product_id")) {
+                $cart = new Cart();
+                $cart->user_id = $userId;
+                $cart->status = 0;
+                $cart->save();
+                $cartId = $cart->id;
+                $cart->cartItem()->attach($cartId, [
+                    'product_id' => $request->product_id,
+                    'quantity' => $request->quantity
+                ]);
+                return response()->json([
+                    "message" => "Thêm sản phẩm vào giỏ hàng thành công",
+                    "data" => $cart
+                ], 200);
+            }
+            if (@$cartStatus && $checkProduct) {
+                $data = [];
+                $data['quantity'] = $request->quantity;
+                DB::table('cart_item')
+                    ->where("cart_id", '=', $cartStatus->id)
+                    ->update($data);
+                return response()->json([
+                    'message' => "Cập nhật số lượng thành công"
+                ]);
+            }
+            if (@$cartStatus && !$checkProduct) {
+                $cart = Cart::find($cartStatus->id);
                 $data = [];
                 $data['cart_id'] = $cart->id;
                 $data['product_id'] = $request->product_id;
@@ -47,31 +78,15 @@ class CartController extends Controller
                 return response()->json([
                     'success' => "Cập nhật giỏ hàng và thêm sản phẩm mới vào giỏ hàng thành công",
                 ], 200);
-            } else {
-                $cart = new Cart();
-                $cart->user_id = $user_id;
-                $cart->save();
-                $cart_id = $cart->id;
-                $cart->cartItem()->attach($cart_id, ['product_id' => $product_id, 'quantity' => $product_quantity]);
-                return response()->json($cart);
             }
         } else {
-            return response()->json([
-                'errors' => "Không tìm thấy user này"
-            ], 404);
+            return response()->json(['message' => "Chưa get email"]);
         }
     }
 
+
     public function showCart(Request $request)
     {
-        $email = $request->get("email");
-        $info = User::where("email", $email)->first();
-        $user_id = $info->id;
-        $checkCart = Cart::where("user_id", $user_id)->first();
-        echo "$request->email";
-        $data =  $checkCart->cartI ;
-        $data->load("infoProduct") ;
 
-        return response()->json($data);
     }
 }
