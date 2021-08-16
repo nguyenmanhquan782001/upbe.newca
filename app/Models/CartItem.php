@@ -9,9 +9,11 @@ class CartItem extends Model
 {
     use HasFactory;
     protected $table = "cart_item";
-    protected $primaryKey = "id" ;
-    public  function  infoProduct () {
-        return $this->belongsTo(Product::class , "product_id");
+    protected $primaryKey = "id";
+    protected $fillable = ['cart_id' , 'product_id'];
+    public function infoProduct(){
+        return $this->belongsTo(Product::class , 'product_id');
     }
+
 
 }

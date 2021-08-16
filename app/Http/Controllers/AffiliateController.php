@@ -325,7 +325,8 @@ class AffiliateController extends Controller
     }
     function paymentWithVNPay(Request $request){
 	    $order_id = date("Ymdhmi",time());
-	    $vnp_TxnRef = $order_id; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
+	    $vnp_TxnRef = $order_id; //Mã đơn hàng.
+        // Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
 	    $vnp_OrderInfo = $request->get('order_desc');
 	    $vnp_OrderType = 'billpayment';
 	    $vnp_Amount = $request->get('amount');

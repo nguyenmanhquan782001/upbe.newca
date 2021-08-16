@@ -46,14 +46,12 @@ Route::get("/point/delete", [PointController::class, 'destroy']);
 Route::get("/products/index", [ProductController::class, 'index']);
 Route::post("/products/store", [ProductController::class, 'store']);
 Route::get("/products/show" , [ProductController::class , 'show']);
-Route::post("/products/update" , [ProductController::class , 'update']);
+Route::post("/products/{id}/update" , [ProductController::class , 'update']);
 Route::get("/products/{id}/delete" , [ProductController::class , 'delete']);
-
 //
 
 // cart
  Route::post("/cart/store/" , [CartController::class , 'store']);
  Route::post("/cart/show" , [CartController::class , 'showCart']);
-
 // end cart
 

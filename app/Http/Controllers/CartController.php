@@ -91,13 +91,10 @@ class CartController extends Controller
             $infoUser = User::where("email", $email)->first();
             if ($infoUser) {
                 $user_id = $infoUser->id;
-                $getCart = Cart::where("user_id", $user_id)->get();
-                foreach ($getCart as  $cart){
-                     $data = $cart->getCartItem;
-                     $data->load("infoProduct");
-//                     echo $data ; 
-                     return  response()->json($data) ;
-                }
+                $getCart = Cart::with(['getCartItem.infoProduct'])->where("user_id" , $user_id)->get();
+//                $getCart->load(['getCartItem']);
+                return  response()->json($getCart);
+
             } else {
                 return response()->json([
                     'message' => "Không tìm thấy email"
